@@ -1,0 +1,71 @@
+﻿<Window x:Class="ClientTutor.AddReviewWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ClientTutor"
+        mc:Ignorable="d"
+        Title="AddReviewWindow" Height="350" Width="450">
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0" 
+                   x:Name="TeacherNameText"
+                   FontSize="16" FontWeight="Bold" 
+                   Margin="0,0,0,15"/>
+
+        <!-- Оценка звездами -->
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,15">
+            <TextBlock Text="Ваша оценка: " VerticalAlignment="Center" Margin="0,0,10,0"/>
+            <StackPanel Orientation="Horizontal" x:Name="RatingPanel">
+                <Button x:Name="Star1" Content="⭐" FontSize="24" 
+                        Background="Transparent" BorderThickness="0"
+                        Cursor="Hand" Click="Star_Click" Tag="1"/>
+                <Button x:Name="Star2" Content="☆" FontSize="24" 
+                        Background="Transparent" BorderThickness="0"
+                        Cursor="Hand" Click="Star_Click" Tag="2"/>
+                <Button x:Name="Star3" Content="☆" FontSize="24" 
+                        Background="Transparent" BorderThickness="0"
+                        Cursor="Hand" Click="Star_Click" Tag="3"/>
+                <Button x:Name="Star4" Content="☆" FontSize="24" 
+                        Background="Transparent" BorderThickness="0"
+                        Cursor="Hand" Click="Star_Click" Tag="4"/>
+                <Button x:Name="Star5" Content="☆" FontSize="24" 
+                        Background="Transparent" BorderThickness="0"
+                        Cursor="Hand" Click="Star_Click" Tag="5"/>
+            </StackPanel>
+        </StackPanel>
+
+        <!-- Комментарий -->
+        <TextBlock Grid.Row="2" Text="Комментарий:" Margin="0,5"/>
+        <TextBox Grid.Row="3" x:Name="CommentBox" 
+                 Height="100" 
+                 Padding="5"
+                 TextWrapping="Wrap"
+                 AcceptsReturn="True"
+                 Margin="0,0,0,15"/>
+
+        <!-- Кнопки -->
+        <StackPanel Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Content=" Отправить" 
+                    Click="SendButton_Click"
+                    Padding="20,8" Margin="0,0,10,0"
+                    Background="Green" Foreground="White"
+                    BorderThickness="0" Cursor="Hand"
+                    IsDefault="True"/>
+
+            <Button Content=" Отмена" 
+                    Click="CancelButton_Click"
+                    Padding="20,8"
+                    Background="Red" Foreground="White"
+                    BorderThickness="0" Cursor="Hand"
+                    IsCancel="True"/>
+        </StackPanel>
+    </Grid>
+</Window>
