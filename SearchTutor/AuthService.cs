@@ -17,7 +17,7 @@ namespace SearchTutor
             _connectionString = connectionString;
         }
 
-        // Хеширование пароля
+        
         public string HashPassword(string password)
         {
             using (var sha256 = SHA256.Create())
@@ -27,7 +27,7 @@ namespace SearchTutor
             }
         }
 
-        // Регистрация ученика
+        
         public async Task<(bool success, int studentId, string error)> RegisterStudentAsync(
             string lastName, string firstName, string middleName,
             string email, string password, string goals, string preferredSubjects)
@@ -38,7 +38,7 @@ namespace SearchTutor
                 {
                     await connection.OpenAsync();
 
-                    // Проверка уникальности email
+                    
                     var checkCommand = new SqlCommand(
                         "SELECT COUNT(*) FROM Students WHERE Email = @Email AND IsDeleted = 0",
                         connection);
@@ -48,7 +48,7 @@ namespace SearchTutor
                     if (exists > 0)
                         return (false, 0, "EMAIL_EXISTS");
 
-                    // Добавление ученика
+                    
                     var command = connection.CreateCommand();
                     command.CommandText = @"
                         INSERT INTO Students (LastName, FirstName, MiddleName, Email, PasswordHash,
@@ -75,7 +75,7 @@ namespace SearchTutor
             }
         }
 
-        // Вход в систему
+        
         public async Task<(bool success, int userId, string role, string error)> LoginAsync(string email, string password)
         {
             string passwordHash = HashPassword(password);
@@ -84,7 +84,7 @@ namespace SearchTutor
             {
                 await connection.OpenAsync();
 
-                // Проверка в таблице учеников
+                
                 var studentCommand = new SqlCommand(
                     @"SELECT Id, LastName, FirstName FROM Students 
                       WHERE Email = @Email AND PasswordHash = @PasswordHash AND IsActive = 1 AND IsDeleted = 0",
@@ -99,7 +99,7 @@ namespace SearchTutor
                         int studentId = reader.GetInt32(0);
                         reader.Close();
 
-                        // Обновляем время последнего входа
+                        
                         var updateCommand = new SqlCommand(
                             "UPDATE Students SET LastLoginAt = GETDATE() WHERE Id = @Id",
                             connection);
@@ -110,7 +110,7 @@ namespace SearchTutor
                     }
                 }
 
-                // Проверка администратора (в реальном проекте - отдельная таблица Admins)
+                
                 if (email == "admin@searchtutor.ru" && password == "admin123")
                 {
                     return (true, 1, "Admin", null);

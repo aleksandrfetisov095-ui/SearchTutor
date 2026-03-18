@@ -33,7 +33,7 @@ namespace ClientTutor
 
             _service = new TutorClientService("127.0.0.1", 5555);
 
-            // Загрузка данных
+            
             Loaded += async (s, e) =>
             {
                 await LoadSubjectsAsync();
@@ -52,10 +52,10 @@ namespace ClientTutor
                 RegisterButton.Visibility = Visibility.Collapsed;
                 LogoutButton.Visibility = Visibility.Visible;
 
-                // Кнопка админа видна только администратору
+                
                 AdminButton.Visibility = SessionManager.IsAdmin ? Visibility.Visible : Visibility.Collapsed;
 
-                // Кнопка добавления учителя только для админа
+                
                 AddTeacherButton.Visibility = SessionManager.IsAdmin ? Visibility.Visible : Visibility.Collapsed;
             }
             else
@@ -119,14 +119,14 @@ namespace ClientTutor
                 StatusText.Text = "Загрузка учеников...";
                 LoadingProgressBar.Visibility = Visibility.Visible;
 
-                // Получаем учеников через сервис
+                
                 var students = await _service.GetStudentsAsync(subject);
 
-                // Обновляем список
+                
                 _students = students;
                 ResultsList.ItemsSource = _students;
 
-                // Обновляем счетчик
+                
                 CounterText.Text = $"Найдено учеников: {_students.Count}";
                 StatusText.Text = $"Загружено {_students.Count} учеников";
 
@@ -174,7 +174,7 @@ namespace ClientTutor
             _ = LoadStudentsAsync();
         }
 
-        // Поиск учителей
+        
         private async void SearchTeachers_Click(object sender, RoutedEventArgs e)
         {
             string subject = SubjectFilterCombo.Text;
@@ -196,7 +196,7 @@ namespace ClientTutor
             _ = LoadTeachersAsync();
         }
 
-        // Поиск учеников
+        
         private async void SearchStudents_Click(object sender, RoutedEventArgs e)
         {
             string subject = StudentSubjectFilterCombo.Text;
@@ -209,7 +209,7 @@ namespace ClientTutor
             _ = LoadStudentsAsync();
         }
 
-        // Кнопки авторизации
+        
         private void LoginButton_Click(object sender, RoutedEventArgs e)
         {
             var loginWindow = new LoginWindow();
@@ -218,7 +218,7 @@ namespace ClientTutor
                 UpdateUIBasedOnAuth();
                 StatusText.Text = $"Добро пожаловать!";
 
-                // Обновляем данные в зависимости от роли
+                
                 if (TeachersTab.IsSelected)
                     _ = LoadTeachersAsync();
                 else
@@ -239,7 +239,7 @@ namespace ClientTutor
                 var adminPanel = new AdminPanel();
                 adminPanel.ShowDialog();
 
-                // Обновляем данные после закрытия админки
+                
                 if (TeachersTab.IsSelected)
                     _ = LoadTeachersAsync();
                 else
@@ -260,7 +260,7 @@ namespace ClientTutor
             StatusText.Text = "Вы вышли из системы";
         }
 
-        // Добавление учителя (админ)
+        
         private async void AddTeacherButton_Click(object sender, RoutedEventArgs e)
         {
             if (!SessionManager.IsAdmin)
@@ -299,7 +299,7 @@ namespace ClientTutor
             }
         }
 
-        // Добавление отзыва
+        
         private async void AddReview_Click(object sender, RoutedEventArgs e)
         {
             if (!SessionManager.IsStudent)
@@ -328,7 +328,7 @@ namespace ClientTutor
                         {
                             MessageBox.Show("Отзыв успешно добавлен!", "Спасибо!",
                                 MessageBoxButton.OK, MessageBoxImage.Information);
-                            await LoadTeachersAsync(); // Обновляем рейтинг
+                            await LoadTeachersAsync(); 
                         }
                         else
                         {

@@ -15,9 +15,6 @@ using System.Windows.Shapes;
 
 namespace ClientTutor
 {
-    /// <summary>
-    /// Interaction logic for AddTeacherWindow.xaml
-    /// </summary>
     public partial class AddTeacherWindow : Window
     {
         public Teacher NewTeacher { get; private set; }
@@ -30,7 +27,7 @@ namespace ClientTutor
 
         private async void AddButton_Click(object sender, RoutedEventArgs e)
         {
-            // Валидация
+            
             if (string.IsNullOrWhiteSpace(LastNameBox.Text) ||
                 string.IsNullOrWhiteSpace(FirstNameBox.Text) ||
                 string.IsNullOrWhiteSpace(SubjectBox.Text))

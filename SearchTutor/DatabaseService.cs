@@ -17,7 +17,7 @@ namespace SearchTutor
             _connectionString = connectionString;
         }
 
-        // Инициализация базы данных
+        
         public async Task InitializeDatabaseAsync()
         {
             using (var connection = new SqlConnection(_connectionString))
@@ -25,7 +25,7 @@ namespace SearchTutor
                 await connection.OpenAsync();
                 Console.WriteLine(" Подключение к БД успешно");
 
-                // Таблица учителей
+                
                 var createTeachers = connection.CreateCommand();
                 createTeachers.CommandText = @"
                     IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='Teachers' AND xtype='U')
@@ -49,7 +49,7 @@ namespace SearchTutor
                 await createTeachers.ExecuteNonQueryAsync();
                 Console.WriteLine(" Таблица Teachers создана");
 
-                // Таблица учеников
+                
                 var createStudents = connection.CreateCommand();
                 createStudents.CommandText = @"
                     IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='Students' AND xtype='U')
@@ -72,7 +72,6 @@ namespace SearchTutor
                 await createStudents.ExecuteNonQueryAsync();
                 Console.WriteLine(" Таблица Students создана");
 
-                // Таблица отзывов
                 var createReviews = connection.CreateCommand();
                 createReviews.CommandText = @"
                     IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='Reviews' AND xtype='U')
@@ -93,7 +92,7 @@ namespace SearchTutor
                 await createReviews.ExecuteNonQueryAsync();
                 Console.WriteLine(" Таблица Reviews создана");
 
-                // Таблица предметов
+                
                 var createSubjects = connection.CreateCommand();
                 createSubjects.CommandText = @"
                     IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='Subjects' AND xtype='U')
@@ -105,7 +104,7 @@ namespace SearchTutor
                 await createSubjects.ExecuteNonQueryAsync();
                 Console.WriteLine("Таблица Subjects создана");
 
-                // Заполняем предметами, если пусто
+                
                 await SeedSubjectsAsync(connection);
             }
         }
@@ -136,7 +135,7 @@ namespace SearchTutor
             }
         }
 
-        // 
+        
 
         public async Task<List<Teacher>> GetAllTeachersAsync(string subject = null, int? minExperience = null, decimal? maxPrice = null)
         {
@@ -369,7 +368,6 @@ namespace SearchTutor
             }
         }
 
-        // ========== ОТЗЫВЫ ==========
 
         public async Task<bool> AddReviewFromStudentAsync(int studentId, int teacherId, int rating, string comment)
         {
@@ -380,7 +378,7 @@ namespace SearchTutor
                 {
                     try
                     {
-                        // Проверка, не оставлял ли уже ученик отзыв этому учителю
+                        
                         var checkCommand = connection.CreateCommand();
                         checkCommand.Transaction = transaction;
                         checkCommand.CommandText = @"
@@ -393,7 +391,7 @@ namespace SearchTutor
                         if (exists > 0)
                             return false;
 
-                        // Добавляем отзыв
+                        
                         var reviewCommand = connection.CreateCommand();
                         reviewCommand.Transaction = transaction;
                         reviewCommand.CommandText = @"
@@ -407,7 +405,7 @@ namespace SearchTutor
 
                         await reviewCommand.ExecuteNonQueryAsync();
 
-                        // Обновляем рейтинг учителя
+                        
                         await UpdateTeacherRatingAsync(connection, transaction, teacherId);
 
                         transaction.Commit();
@@ -421,7 +419,7 @@ namespace SearchTutor
                 }
             }
         }
-        // Мягкое удаление ученика
+        
         public async Task<bool> SoftDeleteStudentAsync(int studentId)
         {
             using (var connection = new SqlConnection(_connectionString))
@@ -439,7 +437,7 @@ namespace SearchTutor
             }
         }
 
-        // Восстановление ученика
+        
         public async Task<bool> RestoreStudentAsync(int studentId)
         {
             using (var connection = new SqlConnection(_connectionString))
@@ -457,7 +455,6 @@ namespace SearchTutor
             }
         }
 
-        // Деактивация ученика (без удаления)
         public async Task<bool> DeactivateStudentAsync(int studentId)
         {
             using (var connection = new SqlConnection(_connectionString))
@@ -475,7 +472,7 @@ namespace SearchTutor
             }
         }
 
-        // Активация ученика
+        
         public async Task<bool> ActivateStudentAsync(int studentId)
         {
             using (var connection = new SqlConnection(_connectionString))
@@ -493,7 +490,7 @@ namespace SearchTutor
             }
         }
 
-        // Получение учеников с учетом фильтра удаленных
+        
         public async Task<List<Student>> GetAllStudentsAsync(bool includeDeleted = false)
         {
             var students = new List<Student>();
@@ -555,7 +552,7 @@ namespace SearchTutor
             await ratingCommand.ExecuteNonQueryAsync();
         }
 
-        // ========== ПРЕДМЕТЫ ==========
+        
 
         public async Task<List<Subject>> GetAllSubjectsAsync()
         {

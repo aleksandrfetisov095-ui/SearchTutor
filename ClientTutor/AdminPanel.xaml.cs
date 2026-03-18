@@ -16,9 +16,7 @@ using System.Windows.Shapes;
 
 namespace ClientTutor
 {
-    /// <summary>
-    /// Interaction logic for AdminPanel.xaml
-    /// </summary>
+    
     public partial class AdminPanel : Window
     {
         private readonly TutorClientService _service;
@@ -50,7 +48,7 @@ namespace ClientTutor
             ReviewsPanel.Visibility = ReviewsTab.IsSelected ? Visibility.Visible : Visibility.Collapsed;
         }
 
-        // ========== УЧИТЕЛЯ ==========
+        //Учителя
 
         private async void RefreshTeachers_Click(object sender, RoutedEventArgs e)
         {
@@ -69,7 +67,7 @@ namespace ClientTutor
                 StatusText.Text = "Загрузка учителей...";
                 LoadingProgressBar.Visibility = Visibility.Visible;
 
-                // Получаем всех учителей с учетом параметра showDeleted
+                
                 _teachers = await _service.GetAllTeachersAsync(showDeleted);
 
                 TeachersGrid.ItemsSource = null;
@@ -193,7 +191,7 @@ namespace ClientTutor
             }
         }
 
-        // ========== УЧЕНИКИ ==========
+        //Ученики
 
         private async void RefreshStudents_Click(object sender, RoutedEventArgs e)
         {
@@ -372,7 +370,7 @@ namespace ClientTutor
             }
         }
 
-        // ========== ОТЗЫВЫ ==========
+        //Отзывы
 
         private async void RefreshReviews_Click(object sender, RoutedEventArgs e)
         {

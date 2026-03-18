@@ -33,7 +33,7 @@ namespace SearchTutor
             {
                 switch (action)
                 {
-                    // Учителя
+                    
                     case "GET_TEACHERS":
                         return await HandleGetTeachersAsync(parts);
 
@@ -49,7 +49,7 @@ namespace SearchTutor
                     case "RESTORE_TEACHER":
                         return await HandleRestoreTeacherAsync(parts);
 
-                    // Ученики
+                    
                     case "GET_STUDENTS":
                         return await HandleGetStudentsAsync(parts);
 
@@ -74,11 +74,9 @@ namespace SearchTutor
                     case "GET_ALL_STUDENTS":
                         return await HandleGetAllStudentsAsync(parts);
 
-                    // Отзывы
                     case "ADD_REVIEW":
                         return await HandleAddReviewAsync(parts);
 
-                    // Предметы
                     case "GET_SUBJECTS":
                         return await HandleGetSubjectsAsync();
 
@@ -95,7 +93,6 @@ namespace SearchTutor
 
         private async Task<string> HandleGetTeachersAsync(string[] parts)
         {
-            // Формат: GET_TEACHERS[:предмет][:стаж][:цена]
             string subject = parts.Length > 1 && parts[1] != "-" ? parts[1] : null;
             int? experience = parts.Length > 2 && int.TryParse(parts[2], out int exp) ? exp : (int?)null;
             decimal? maxPrice = parts.Length > 3 && decimal.TryParse(parts[3], out decimal price) ? price : (decimal?)null;
@@ -167,11 +164,11 @@ namespace SearchTutor
         }
         private async Task<string> HandleAddTeacherAsync(string[] parts)
         {
-            // Формат: ADD_TEACHER:Фамилия:Имя:Отчество:Предмет:Стаж:ЦенаОт:ЦенаДо:Образование:Описание:Админ
+            
             if (parts.Length < 11)
                 return "RESPONSE:ERROR:INVALID_FORMAT";
 
-            // Проверка прав (в реальном проекте - проверка токена)
+            
             string adminName = parts[10];
             if (adminName != "admin")
                 return "RESPONSE:ERROR:ACCESS_DENIED";
@@ -190,7 +187,7 @@ namespace SearchTutor
             };
 
             int newId = await _dbService.AddTeacherAsync(teacher, adminName);
-            Console.WriteLine($"  ➕ Добавлен учитель: {teacher.FullName} (ID: {newId})");
+            Console.WriteLine($"  Добавлен учитель: {teacher.FullName} (ID: {newId})");
             return $"RESPONSE:ADDED:ID={newId}";
         }
 
@@ -198,17 +195,17 @@ namespace SearchTutor
         {
             try
             {
-                Console.WriteLine("   Запрос всех учителей (админка)");
+                Console.WriteLine("  Запрос всех учителей (админка)");
 
                 bool includeDeleted = parts.Length > 1 && parts[1] == "with_deleted";
                 var teachers = await _dbService.GetAllTeachersAsync(includeDeleted);
 
-                Console.WriteLine($"  📊 Найдено учителей: {teachers.Count}");
+                Console.WriteLine($"  Найдено учителей: {teachers.Count}");
                 return EncodeTeachersResponse(teachers);
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"  ❌ Ошибка: {ex.Message}");
+                Console.WriteLine($"  Ошибка: {ex.Message}");
                 return "RESPONSE:ERROR:DB_ERROR";
             }
         }
@@ -221,7 +218,7 @@ namespace SearchTutor
             bool deleted = await _dbService.SoftDeleteTeacherAsync(teacherId);
             if (deleted)
             {
-                Console.WriteLine($"  🗑️ Учитель помечен как удаленный: ID {teacherId}");
+                Console.WriteLine($" Учитель помечен как удаленный: ID {teacherId}");
                 return $"RESPONSE:DELETED:ID={teacherId}";
             }
             return "RESPONSE:ERROR:TEACHER_NOT_FOUND";
@@ -245,15 +242,15 @@ namespace SearchTutor
         {
             try
             {
-                Console.WriteLine("  📋 Запрос списка учеников");
+                Console.WriteLine("   Запрос списка учеников");
 
-                // Формат: GET_STUDENTS[:предмет]
+                
                 string subject = parts.Length > 1 && parts[1] != "-" ? parts[1] : null;
 
-                // Получаем учеников из БД (только активных и не удаленных)
+                
                 var students = await _dbService.GetAllStudentsAsync(false);
 
-                // Фильтрация по предмету, если указан
+                
                 if (!string.IsNullOrEmpty(subject))
                 {
                     students = students.Where(s =>
@@ -262,20 +259,20 @@ namespace SearchTutor
                     ).ToList();
                 }
 
-                Console.WriteLine($"  📊 Найдено учеников: {students.Count}");
+                Console.WriteLine($"   Найдено учеников: {students.Count}");
 
                 return EncodeStudentsResponse(students);
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"  ❌ Ошибка получения учеников: {ex.Message}");
+                Console.WriteLine($"   Ошибка получения учеников: {ex.Message}");
                 return "RESPONSE:ERROR:DB_ERROR";
             }
         }
 
         private async Task<string> HandleRegisterStudentAsync(string[] parts)
         {
-            // Формат: REGISTER_STUDENT:Фамилия:Имя:Отчество:Email:Пароль:Цели:Предметы
+            
             if (parts.Length < 8)
                 return "RESPONSE:ERROR:INVALID_FORMAT";
 
@@ -298,7 +295,7 @@ namespace SearchTutor
 
         private async Task<string> HandleLoginAsync(string[] parts)
         {
-            // Формат: LOGIN:Email:Пароль
+            
             if (parts.Length < 3)
                 return "RESPONSE:ERROR:INVALID_FORMAT";
 
@@ -317,7 +314,7 @@ namespace SearchTutor
 
         private async Task<string> HandleAddReviewAsync(string[] parts)
         {
-            // Формат: ADD_REVIEW:StudentId:TeacherId:Rating:Comment
+            
             if (parts.Length < 5)
                 return "RESPONSE:ERROR:INVALID_FORMAT";
 

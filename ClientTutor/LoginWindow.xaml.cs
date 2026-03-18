@@ -32,7 +32,7 @@ namespace ClientTutor
 
         private async void LoginButton_Click(object sender, RoutedEventArgs e)
         {
-            // Проверка заполнения email
+            
             if (string.IsNullOrWhiteSpace(EmailBox.Text))
             {
                 MessageBox.Show("Введите email", "Ошибка",
@@ -41,7 +41,7 @@ namespace ClientTutor
                 return;
             }
 
-            // Проверка корректности email
+            
             if (!Helpers.ValidationHelper.IsValidEmailSimple(EmailBox.Text.Trim()))
             {
                 MessageBox.Show(Helpers.ValidationHelper.GetEmailErrorMessage(),
@@ -50,7 +50,7 @@ namespace ClientTutor
                 return;
             }
 
-            // Проверка пароля
+            
             if (PasswordBox.Password.Length == 0)
             {
                 MessageBox.Show("Введите пароль", "Ошибка",
@@ -99,7 +99,7 @@ namespace ClientTutor
             DialogResult = false;
         }
 
-        // Очистка полей при открытии
+        
         protected override void OnActivated(EventArgs e)
         {
             base.OnActivated(e);

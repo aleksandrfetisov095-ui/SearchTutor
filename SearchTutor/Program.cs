@@ -22,14 +22,14 @@ namespace SearchTutor
                 string connectionString = ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
                 int port = int.Parse(ConfigurationManager.AppSettings["ServerPort"] ?? "5555");
 
-                // Инициализация сервисов
+                
                 var dbService = new DatabaseService(connectionString);
                 await dbService.InitializeDatabaseAsync();
 
                 var authService = new AuthService(connectionString);
                 var handler = new CommandHandler(dbService, authService);
 
-                // Запуск UDP сервера
+                
                 await StartUdpServer(port, handler);
             }
             catch (Exception ex)

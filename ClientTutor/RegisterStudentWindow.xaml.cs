@@ -16,9 +16,7 @@ using System.Windows.Shapes;
 
 namespace ClientTutor
 {
-    /// <summary>
-    /// Interaction logic for RegisterStudentWindow.xaml
-    /// </summary>
+    
     public partial class RegisterStudentWindow : Window
     {
         public bool IsSuccess { get; private set; }
@@ -31,7 +29,7 @@ namespace ClientTutor
 
         private async void RegisterButton_Click(object sender, RoutedEventArgs e)
         {
-            // Валидация ФИО
+            
             if (string.IsNullOrWhiteSpace(LastNameBox.Text) ||
                 string.IsNullOrWhiteSpace(FirstNameBox.Text))
             {
@@ -40,7 +38,7 @@ namespace ClientTutor
                 return;
             }
 
-            // Валидация email
+            
             if (string.IsNullOrWhiteSpace(EmailBox.Text))
             {
                 MessageBox.Show("Введите email",
@@ -48,7 +46,7 @@ namespace ClientTutor
                 return;
             }
 
-            // Проверка корректности email
+            
             if (!ValidationHelper.IsValidEmailSimple(EmailBox.Text.Trim()))
             {
                 MessageBox.Show(ValidationHelper.GetEmailErrorMessage(),
@@ -57,7 +55,7 @@ namespace ClientTutor
                 return;
             }
 
-            // Валидация пароля
+            
             if (PasswordBox.Password.Length < 3)
             {
                 MessageBox.Show("Пароль должен быть не менее 3 символов",
@@ -81,7 +79,7 @@ namespace ClientTutor
                     LastNameBox.Text.Trim(),
                     FirstNameBox.Text.Trim(),
                     MiddleNameBox.Text.Trim(),
-                    EmailBox.Text.Trim().ToLower(), // Сохраняем email в нижнем регистре
+                    EmailBox.Text.Trim().ToLower(), 
                     PasswordBox.Password,
                     GoalsBox.Text.Trim(),
                     SubjectsBox.Text.Trim()
@@ -89,7 +87,7 @@ namespace ClientTutor
 
                 if (success)
                 {
-                    MessageBox.Show("✅ Регистрация успешна! Теперь вы можете войти.",
+                    MessageBox.Show(" Регистрация успешна! Теперь вы можете войти.",
                         "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
                     IsSuccess = true;
                     DialogResult = true;
@@ -120,7 +118,7 @@ namespace ClientTutor
             DialogResult = false;
         }
 
-        // Очистка полей при открытии
+        
         protected override void OnActivated(EventArgs e)
         {
             base.OnActivated(e);

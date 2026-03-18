@@ -21,26 +21,20 @@ namespace ClientTutor.Services
             _serverPort = serverPort;
             _serverEndPoint = new IPEndPoint(IPAddress.Parse(serverIp), serverPort);
         }
-
-        // ========== БАЗОВЫЕ МЕТОДЫ ==========
-
-        /// <summary>
-        /// Универсальный метод отправки и получения данных
-        /// </summary>
         private async Task<string> SendAndReceiveAsync(string message)
         {
             using (Socket client = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp))
             {
-                // Устанавливаем таймаут
+                
                 client.ReceiveTimeout = 3000;
 
                 byte[] sendData = Encoding.UTF8.GetBytes(message);
 
-                // Отправка
+                
                 await Task.Run(() => client.SendTo(sendData, _serverEndPoint));
 
-                // Прием ответа
-                byte[] receiveBuffer = new byte[16384]; // Увеличил буфер для больших ответов
+                
+                byte[] receiveBuffer = new byte[16384]; 
                 EndPoint remoteEndPoint = new IPEndPoint(IPAddress.Any, 0);
 
                 try
@@ -51,7 +45,7 @@ namespace ClientTutor.Services
                         int received = receiveTask.Result;
                         return Encoding.UTF8.GetString(receiveBuffer, 0, received);
                     }
-                    return null; // Таймаут
+                    return null; 
                 }
                 catch (SocketException ex)
                 {
@@ -61,8 +55,7 @@ namespace ClientTutor.Services
             }
         }
 
-        // ========== ЭКРАНИРОВАНИЕ ==========
-
+        
         private string Escape(string text)
         {
             return text?.Replace("|", "[PIPE]").Replace(";", "[S]") ?? "-";
@@ -74,11 +67,7 @@ namespace ClientTutor.Services
             return text.Replace("[PIPE]", "|").Replace("[S]", ";");
         }
 
-        // ========== УЧИТЕЛЯ ==========
-
-        /// <summary>
-        /// Получение списка учителей с фильтрацией
-        /// </summary>
+        
         public async Task<List<Teacher>> GetTeachersAsync(string subject = null, int? minExperience = null, decimal? maxPrice = null)
         {
             string command = $"CMD:GET_TEACHERS:{subject ?? "-"}:{minExperience?.ToString() ?? "-"}:{maxPrice?.ToString() ?? "-"}";
@@ -118,9 +107,7 @@ namespace ClientTutor.Services
             return teachers;
         }
 
-        /// <summary>
-        /// Получение всех учителей (включая удаленных) - для админки
-        /// </summary>
+       
         public async Task<List<Teacher>> GetAllTeachersAsync(bool includeDeleted = false)
         {
             string command = includeDeleted ? "CMD:GET_ALL_TEACHERS:with_deleted" : "CMD:GET_ALL_TEACHERS";
@@ -161,9 +148,7 @@ namespace ClientTutor.Services
             return teachers;
         }
 
-        /// <summary>
-        /// Добавление нового учителя
-        /// </summary>
+        
         public async Task<int> AddTeacherAsync(Teacher teacher)
         {
             string command = $"CMD:ADD_TEACHER:{Escape(teacher.LastName)}:{Escape(teacher.FirstName)}:{Escape(teacher.MiddleName ?? "-")}:{Escape(teacher.Subject)}:{teacher.Experience}:{teacher.PriceMin}:{teacher.PriceMax}:{Escape(teacher.Education ?? "-")}:{Escape(teacher.Description ?? "-")}:admin";
@@ -176,29 +161,20 @@ namespace ClientTutor.Services
             return 0;
         }
 
-        /// <summary>
-        /// Удаление учителя (мягкое)
-        /// </summary>
+        
         public async Task<bool> DeleteTeacherAsync(int teacherId)
         {
             string response = await SendAndReceiveAsync($"CMD:DELETE_TEACHER:{teacherId}");
             return response?.StartsWith("RESPONSE:DELETED:") == true;
         }
 
-        /// <summary>
-        /// Восстановление учителя
-        /// </summary>
+        
         public async Task<bool> RestoreTeacherAsync(int teacherId)
         {
             string response = await SendAndReceiveAsync($"CMD:RESTORE_TEACHER:{teacherId}");
             return response?.StartsWith("RESPONSE:RESTORED:") == true;
         }
 
-        // ========== УЧЕНИКИ ==========
-
-        /// <summary>
-        /// Получение списка учеников
-        /// </summary>
         public async Task<List<Student>> GetStudentsAsync(string subject = null)
         {
             string command = $"CMD:GET_STUDENTS:{subject ?? "-"}";
@@ -236,10 +212,6 @@ namespace ClientTutor.Services
             }
             return students;
         }
-
-        /// <summary>
-        /// Получение всех учеников (включая удаленных) - для админки
-        /// </summary>
         public async Task<List<Student>> GetAllStudentsAsync(bool includeDeleted = false)
         {
             string command = includeDeleted ? "CMD:GET_ALL_STUDENTS:with_deleted" : "CMD:GET_ALL_STUDENTS";
@@ -278,9 +250,7 @@ namespace ClientTutor.Services
             }
             return students;
         }
-        /// <summary>
-        /// Регистрация нового ученика
-        /// </summary>
+        
         public async Task<(bool success, int studentId, string error)> RegisterStudentAsync(
             string lastName, string firstName, string middleName,
             string email, string password, string goals, string subjects)
@@ -301,47 +271,34 @@ namespace ClientTutor.Services
             return (false, 0, "UNKNOWN_ERROR");
         }
 
-        /// <summary>
-        /// Удаление ученика (мягкое)
-        /// </summary>
+        
         public async Task<bool> DeleteStudentAsync(int studentId)
         {
             string response = await SendAndReceiveAsync($"CMD:DELETE_STUDENT:{studentId}");
             return response?.StartsWith("RESPONSE:DELETED:") == true;
         }
 
-        /// <summary>
-        /// Восстановление ученика
-        /// </summary>
+        
         public async Task<bool> RestoreStudentAsync(int studentId)
         {
             string response = await SendAndReceiveAsync($"CMD:RESTORE_STUDENT:{studentId}");
             return response?.StartsWith("RESPONSE:RESTORED:") == true;
         }
 
-        /// <summary>
-        /// Деактивация ученика
-        /// </summary>
+        
         public async Task<bool> DeactivateStudentAsync(int studentId)
         {
             string response = await SendAndReceiveAsync($"CMD:DEACTIVATE_STUDENT:{studentId}");
             return response?.StartsWith("RESPONSE:DEACTIVATED:") == true;
         }
 
-        /// <summary>
-        /// Активация ученика
-        /// </summary>
+        
         public async Task<bool> ActivateStudentAsync(int studentId)
         {
             string response = await SendAndReceiveAsync($"CMD:ACTIVATE_STUDENT:{studentId}");
             return response?.StartsWith("RESPONSE:ACTIVATED:") == true;
         }
 
-        // ========== АВТОРИЗАЦИЯ ==========
-
-        /// <summary>
-        /// Вход в систему
-        /// </summary>
         public async Task<(bool success, int userId, string role, string error)> LoginAsync(string email, string password)
         {
             string response = await SendAndReceiveAsync($"CMD:LOGIN:{email}:{password}");
@@ -365,11 +322,7 @@ namespace ClientTutor.Services
             return (false, 0, null, "UNKNOWN_ERROR");
         }
 
-        // ========== ОТЗЫВЫ ==========
-
-        /// <summary>
-        /// Добавление отзыва ученика учителю
-        /// </summary>
+        
         public async Task<bool> AddReviewAsync(int teacherId, int rating, string comment)
         {
             string command = $"CMD:ADD_REVIEW:{SessionManager.CurrentUserId}:{teacherId}:{rating}:{Escape(comment)}";
@@ -378,9 +331,7 @@ namespace ClientTutor.Services
             return response == "RESPONSE:REVIEW_ADDED";
         }
 
-        /// <summary>
-        /// Получение всех отзывов (для админки)
-        /// </summary>
+        
         public async Task<List<Review>> GetAllReviewsAsync(bool showModerated = false)
         {
             string command = showModerated ? "CMD:GET_ALL_REVIEWS:all" : "CMD:GET_ALL_REVIEWS:unmoderated";
@@ -418,29 +369,20 @@ namespace ClientTutor.Services
             return reviews;
         }
 
-        /// <summary>
-        /// Одобрение отзыва (модерация)
-        /// </summary>
+        
         public async Task<bool> ApproveReviewAsync(int reviewId)
         {
             string response = await SendAndReceiveAsync($"CMD:APPROVE_REVIEW:{reviewId}");
             return response?.StartsWith("RESPONSE:APPROVED:") == true;
         }
 
-        /// <summary>
-        /// Удаление отзыва
-        /// </summary>
+        
         public async Task<bool> DeleteReviewAsync(int reviewId)
         {
             string response = await SendAndReceiveAsync($"CMD:DELETE_REVIEW:{reviewId}");
             return response?.StartsWith("RESPONSE:DELETED:") == true;
         }
 
-        // ========== ПРЕДМЕТЫ ==========
-
-        /// <summary>
-        /// Получение списка предметов
-        /// </summary>
         public async Task<List<Subject>> GetSubjectsAsync()
         {
             string response = await SendAndReceiveAsync("CMD:GET_SUBJECTS");

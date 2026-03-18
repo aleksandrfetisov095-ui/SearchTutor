@@ -14,9 +14,6 @@ using System.Windows.Shapes;
 
 namespace ClientTutor
 {
-    /// <summary>
-    /// Interaction logic for AddReviewWindow.xaml
-    /// </summary>
     public partial class AddReviewWindow : Window
     {
         public int Rating { get; private set; }
